@@ -40,9 +40,15 @@ app.get('/help', (req, res) => {
 })
 
 app.get('/weather', (req, res) => {
+   if (!req.query.address) {
+      return res.send({
+         error: "No address provided"
+      })
+   }
+   const address = req.query.address
    res.send({
-      location: 'Brasilia',
-      temperature: 27,
+      forecast: 'Hardcoded',
+      address,
    })
 })
 
