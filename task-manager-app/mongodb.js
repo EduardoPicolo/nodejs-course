@@ -6,8 +6,49 @@ const databaseName = 'task-manager'
 
 MongoClient.connect(connectionURL, { useNewUrlParser: true }, (error, client) => {
    if (error) {
-     return  console.log('Unable to connect to database!')
+      return console.log('Unable to connect to database!')
    }
 
-   console.log('Connected correctly!')
+   const db = client.db(databaseName)
+
+   // db.collection('users').insertOne({
+   //    name: 'Eduardo',
+   //    age: 19
+   // }, (error, result) => {
+   //    if(error){
+   //       return console.log('Unable to insert user', error)
+   //    }
+
+   //    console.log(result.ops)
+   // })
+
+   // db.collection('users').insertMany([
+   //    {
+   //       name: 'Edu',
+   //       age: 20
+   //    }, {
+   //       name: 'Picolo',
+   //       age: 21
+   //    }
+   // ], (error, result) => {
+   //    if(error) return console.log(error)
+
+   //    console.log(result.ops)
+   // })
+
+   db.collection('tasks').insertMany([
+      {
+         description: 'first task',
+         completed: true
+      }, {
+         description: 'second task',
+         completed: false
+      }, {
+         description: 'third task',
+         completed: false
+      }
+   ], (error, result) => {
+      if (error) return console.log(error)
+      console.log(result.ops)
+   })
 })
