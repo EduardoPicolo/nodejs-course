@@ -38,7 +38,7 @@ app.get('/users/:_id', async (req, res) => {
    try {
       const user = await User.findById(_id)
       if (!user)
-         return res.status(404).send()  //404: Not Found
+         return res.status(404).send({ Error: 'Invalid updates!' })  //404: Not Found
       res.send(user)
    } catch (error) {
       res.status(500).send()  //500: Internal Server Error
@@ -47,11 +47,11 @@ app.get('/users/:_id', async (req, res) => {
 
 app.patch('/users/:_id', async (req, res) => {
    const updates = Object.keys(req.body)
-   const allowedUpdated = [ 'name', 'email', 'password', 'age']
-   const isValidOperation = updates.every(item => allowedUpdated.includes(item))
+   const allowedUpdates = ['name', 'email', 'password', 'age']
+   const isValidOperation = updates.every(item => allowedUpdates.includes(item))
 
    if (!isValidOperation) {
-      return res.status(400).send({ Error: 'Invalid updates!'})
+      return res.status(400).send({ Error: 'Invalid updates!' })  //400: Bad Request
    }
 
    const { _id } = req.params
@@ -60,12 +60,12 @@ app.patch('/users/:_id', async (req, res) => {
    try {
       const user = await User.findByIdAndUpdate(_id, updateParams, { new: true, runValidators: true })
 
-      if(!user)
-         return res.status(404).send()
-      
+      if (!user)
+         return res.status(404).send({ Error: 'User not found'})  //404: Not Found
+
       res.send(user)
    } catch (error) {
-      res.status(400).send(error)
+      res.status(400).send(error)  //400: Bad Request
    }
 })
 
@@ -99,10 +99,32 @@ app.get('/tasks/:_id', async (req, res) => {
    try {
       const task = await Task.findById(_id)
       if (!task)
-         return res.status(404).send()  //404: Not Found
+         return res.status(404).send({ Error: 'Task not found'})  //404: Not Found
       res.send(task)
    } catch (error) {
       res.status(500).send()  //500: Internal Server Error
+   }
+})
+
+app.patch('/tasks/:_id', async (req, res) => {
+   const allowedUpdates = ['description', 'completed']
+   const updates = Object.keys(req.body)
+   const isValidOperation = updates.every((item) => allowedUpdates.includes(item))
+   if (!isValidOperation)
+      return res.status(400).send({ Error: 'Invalid updates!' })  //400: Bad Request
+
+   const { _id } = req.params
+   const updateParams = req.body
+
+   try {
+      const task = await Task.findByIdAndUpdate(_id, updateParams, { new: true, runValidators: true })
+
+      if (!task)
+         return res.status(404).send({ Error: 'Task not found'})  //404: Not Found
+
+      res.send(task)
+   } catch (error) {
+      res.status(400).send(error)  //400: Bad Request
    }
 })
 
