@@ -61,11 +61,24 @@ app.patch('/users/:_id', async (req, res) => {
       const user = await User.findByIdAndUpdate(_id, updateParams, { new: true, runValidators: true })
 
       if (!user)
-         return res.status(404).send({ Error: 'User not found'})  //404: Not Found
+         return res.status(404).send({ Error: 'User not found' })  //404: Not Found
 
       res.send(user)
    } catch (error) {
       res.status(400).send(error)  //400: Bad Request
+   }
+})
+
+app.delete('/users/:_id', async (req, res) => {
+   const { _id } = req.params
+
+   try {
+      const user = await User.findByIdAndDelete(_id)
+      if (!user)
+         return res.status(404).send({ Error: 'User not found' })  //404: Not Found
+      res.send(user)
+   } catch (error) {
+      res.status(500).send
    }
 })
 
@@ -99,7 +112,7 @@ app.get('/tasks/:_id', async (req, res) => {
    try {
       const task = await Task.findById(_id)
       if (!task)
-         return res.status(404).send({ Error: 'Task not found'})  //404: Not Found
+         return res.status(404).send({ Error: 'Task not found' })  //404: Not Found
       res.send(task)
    } catch (error) {
       res.status(500).send()  //500: Internal Server Error
@@ -120,7 +133,7 @@ app.patch('/tasks/:_id', async (req, res) => {
       const task = await Task.findByIdAndUpdate(_id, updateParams, { new: true, runValidators: true })
 
       if (!task)
-         return res.status(404).send({ Error: 'Task not found'})  //404: Not Found
+         return res.status(404).send({ Error: 'Task not found' })  //404: Not Found
 
       res.send(task)
    } catch (error) {
@@ -128,6 +141,18 @@ app.patch('/tasks/:_id', async (req, res) => {
    }
 })
 
+app.delete('/tasks/:_id', async (req, res) => {
+   const { _id } = req.params
+
+   try {
+      const task = await Task.findByIdAndDelete(_id)
+      if (!task)
+         return res.status(404).send({ Error: 'Task not found' })  //404: Not Found
+      res.send(task)
+   } catch (error) {
+      res.status(500).send()  //500: Internal Server Error
+   }
+})
 
 app.listen(port, () => {
    console.log(`Server is up on port ${port}`)
