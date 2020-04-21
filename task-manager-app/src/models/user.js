@@ -6,18 +6,19 @@ const userSchema = new moongose.Schema({
    name: {
       type: String,
       required: true,
-      trim: true,
+      trim: true
    },
    email: {
       type: String,
       required: true,
+      unique: true,
       trim: true,
       lowercase: true,
       validate(value) {
          if (!validator.isEmail(value)) {
             throw new Error('Email is invalid')
          }
-      },
+      }
    },
    password: {
       type: String,
@@ -27,7 +28,7 @@ const userSchema = new moongose.Schema({
       validate(value) {
          if (value.includes('password'))
             throw new Error('Password must not contain "password"')
-      },
+      }
    },
    age: {
       type: Number,
@@ -37,11 +38,24 @@ const userSchema = new moongose.Schema({
             console.log('error')
             throw new Error('Age must be a positive number')
          }
-      },
-   },
+      }
+   }
 })
 
-userSchema.pre('save', async function(next){
+userSchema.statics.findByCredentials = async (email, password) => {
+   const user = await User.findOne({ email })
+   if (!user)
+      throw new Error('Unable to login')
+
+   const isMatch = await bcrypt.compare(password, user.password)
+   if (!isMatch)
+      throw new Error('Unable to login')
+
+   return user
+}
+
+// Hash the plain text password before saving
+userSchema.pre('save', async function (next) {
    const user = this
 
    if (user.isModified('password')) {
