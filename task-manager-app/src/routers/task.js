@@ -18,32 +18,32 @@ router.post('/tasks', auth, async (req, res) => {
    }
 })
 
-router.get('/tasks', async (req, res) => {
-   try {
-      const tasks = await Task.find({})
-      if (!tasks)
-         return res.status(204).send()  //204: No Content
-      res.send(tasks)
-
-   } catch (error) {
-      res.status(500).send(error)  //500: Internal Server Error
-   }
-})
-
-router.get('/tasks/:_id', async (req, res) => {
+router.get('/tasks/:_id', auth, async (req, res) => {
    const { _id } = req.params
 
    try {
-      const task = await Task.findById(_id)
+      const task = await Task.findOne({ _id, owner: req.user._id })
       if (!task)
-         return res.status(404).send({ Error: 'Task not found' })  //404: Not Found
+         return res.status(404).send()  //404: Not Found
       res.send(task)
    } catch (error) {
       res.status(500).send()  //500: Internal Server Error
    }
 })
 
-router.patch('/tasks/:_id', async (req, res) => {
+router.get('/tasks', auth, async (req, res) => {
+   try {
+      // const tasks = await Task.find({ owner: req.user._id})
+      // if (!tasks)
+      //    return res.status(204).send()  //204: No Content
+      await req.user.populate('tasks').execPopulate()
+      res.send(req.user.tasks)
+   } catch (error) {
+      res.status(500).send(error)  //500: Internal Server Error
+   }
+})
+
+router.patch('/tasks/:_id', auth, async (req, res) => {
    const updates = Object.keys(req.body)
    const allowedUpdates = ['description', 'completed']
    const isValidOperation = updates.every(item => allowedUpdates.includes(item))
@@ -51,10 +51,10 @@ router.patch('/tasks/:_id', async (req, res) => {
       return res.status(400).send({ Error: 'Invalid updates!' })  //400: Bad Request
 
    try {
-      const task = await Task.findById(req.params._id)
+      const task = await Task.findOne({ _id: req.params._id, owner: req.user._id})
       if (!task)
-         return res.status(404).send({ Error: 'Task not found' })  //404: Not Found
-      
+         return res.status(404).send()  //404: Not Found
+
       updates.map(field => task[field] = req.body[field])
       await task.save()
 
@@ -64,13 +64,13 @@ router.patch('/tasks/:_id', async (req, res) => {
    }
 })
 
-router.delete('/tasks/:_id', async (req, res) => {
+router.delete('/tasks/:_id', auth, async (req, res) => {
    const { _id } = req.params
 
    try {
-      const task = await Task.findByIdAndDelete(_id)
+      const task = await Task.findOneAndDelete({ _id, owner: req.user._id})
       if (!task)
-         return res.status(404).send({ Error: 'Task not found' })  //404: Not Found
+         return res.status(404).send()  //404: Not Found
       res.send(task)
    } catch (error) {
       res.status(500).send()  //500: Internal Server Error
