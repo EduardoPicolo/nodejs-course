@@ -8,7 +8,8 @@ router.post('/users', async (req, res) => {
 
    try {
       await user.save()
-      res.status(201).send(user)  //201: Created
+      const token = await user.generateAuthToken()
+      res.status(201).send({ user, token })  //201: Created
    } catch (e) {
       res.status(400).send(e) //400: Bad Request
    }
@@ -17,10 +18,11 @@ router.post('/users', async (req, res) => {
 router.post('/users/login', async (req, res) => {
    const { email, password } = req.body
    try {
-      const user = await User.findByCredentials(email, password)
-      res.send(user)
+      const user = await User.findByCredentials(email, req.body.password)
+      const token = await user.generateAuthToken()
+      res.send({ user, token })
    } catch (error) {
-      res.status(400).send()
+      res.status(400).send(error)
    }
 })
 
