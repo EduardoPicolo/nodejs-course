@@ -10,6 +10,11 @@ const Task = moongose.model('Task', {
       type: Boolean,
       default: false
    },
+   owner: {
+      type: moongose.Schema.Types.ObjectId,
+      require: true,
+      ref: 'User'
+   }
 })
 
 module.exports = Task
