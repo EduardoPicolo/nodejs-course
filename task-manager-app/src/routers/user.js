@@ -1,5 +1,6 @@
 const { Router } = require('express')
 const User = require('../models/user')
+const auth = require('../middleware/auth')
 
 const router = new Router()
 
@@ -26,15 +27,8 @@ router.post('/users/login', async (req, res) => {
    }
 })
 
-router.get('/users', async (req, res) => {
-   try {
-      const users = await User.find({})
-      if (!users)
-         return res.status(204).send()  //204: No Content
-      res.send(users)
-   } catch (e) {
-      res.status(500).send(e)  //500: Internal Server Error
-   }
+router.get('/users/me', auth, async (req, res) => {
+   res.send(req.user)
 })
 
 router.get('/users/:_id', async (req, res) => {
