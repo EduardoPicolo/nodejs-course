@@ -32,11 +32,17 @@ router.get('/tasks/:_id', auth, async (req, res) => {
 })
 
 router.get('/tasks', auth, async (req, res) => {
+   const match = {}
+
+   if (req.query.completed) {
+      match.completed = req.query.completed === 'true'
+   }
+
    try {
-      // const tasks = await Task.find({ owner: req.user._id})
-      // if (!tasks)
-      //    return res.status(204).send()  //204: No Content
-      await req.user.populate('tasks').execPopulate()
+      await req.user.populate({
+         path: 'tasks',
+         match
+      }).execPopulate()
       res.send(req.user.tasks)
    } catch (error) {
       res.status(500).send(error)  //500: Internal Server Error
@@ -51,7 +57,7 @@ router.patch('/tasks/:_id', auth, async (req, res) => {
       return res.status(400).send({ Error: 'Invalid updates!' })  //400: Bad Request
 
    try {
-      const task = await Task.findOne({ _id: req.params._id, owner: req.user._id})
+      const task = await Task.findOne({ _id: req.params._id, owner: req.user._id })
       if (!task)
          return res.status(404).send()  //404: Not Found
 
@@ -68,7 +74,7 @@ router.delete('/tasks/:_id', auth, async (req, res) => {
    const { _id } = req.params
 
    try {
-      const task = await Task.findOneAndDelete({ _id, owner: req.user._id})
+      const task = await Task.findOneAndDelete({ _id, owner: req.user._id })
       if (!task)
          return res.status(404).send()  //404: Not Found
       res.send(task)
