@@ -1,6 +1,6 @@
 const moongose = require('mongoose')
 
-const Task = moongose.model('Task', {
+const taskSchema = new moongose.Schema({
    description: {
       type: String,
       required: true,
@@ -15,6 +15,10 @@ const Task = moongose.model('Task', {
       require: true,
       ref: 'User'
    }
+}, {
+   timestamps: true
 })
+
+const Task = moongose.model('Task', taskSchema)
 
 module.exports = Task
