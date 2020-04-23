@@ -58,9 +58,9 @@ router.patch('/users/me', auth, async (req, res) => {
    const allowedUpdates = ['name', 'email', 'password', 'age']
    const isValidOperation = updates.every(item => allowedUpdates.includes(item))
 
-   if (!isValidOperation) 
+   if (!isValidOperation)
       return res.status(400).send({ Error: 'Invalid updates!' })  //400: Bad Request
-   
+
    try {
       updates.forEach(field => req.user[field] = req.body[field]);
       await req.user.save()
@@ -80,7 +80,16 @@ router.delete('/users/me', auth, async (req, res) => {
 })
 
 const upload = multer({
-   dest: 'avatars'
+   dest: 'avatars',
+   limits: {
+      fileSize: 1000000
+   },
+   fileFilter(req, file, callback) {
+      if (!file.originalname.match(/\.(jpg|jpeg|png)$/))
+         return callback(new Error('Please upload an image'))
+
+      callback(null, true)
+   }
 })
 
 router.post('/users/me/avatar', upload.single('avatar'), async (req, res) => {
