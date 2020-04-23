@@ -46,7 +46,10 @@ const userSchema = new moongose.Schema({
          type: String,
          required: true
       }
-   }]
+   }],
+   avatar: {
+      type: Buffer
+   }
 }, {
    timestamps: true
 })
@@ -87,7 +90,7 @@ userSchema.statics.findByCredentials = async (email, password) => {
    if (!isMatch) {
       throw new Error('Unable to login')
    }
-   
+
    return user
 }
 
