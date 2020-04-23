@@ -1,6 +1,6 @@
 const moongose = require('mongoose')
 
-moongose.connect('mongodb://127.0.0.1:27017/task-manager-api', {
+moongose.connect(process.env.MONGODB_URL, {
    useNewUrlParser: true,
    useCreateIndex: true,
    useFindAndModify: false
