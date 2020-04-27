@@ -24,7 +24,7 @@ router.get('/tasks/:_id', auth, async (req, res) => {
    try {
       const task = await Task.findOne({ _id, owner: req.user._id })
       if (!task)
-         return res.status(404).send()  //404: Not Found
+         return res.status(400).send()  //404: Not Found
       res.send(task)
    } catch (error) {
       res.status(500).send()  //500: Internal Server Error
@@ -72,7 +72,7 @@ router.patch('/tasks/:_id', auth, async (req, res) => {
    try {
       const task = await Task.findOne({ _id: req.params._id, owner: req.user._id })
       if (!task)
-         return res.status(404).send()  //404: Not Found
+         return res.status(400).send()  //404: Not Found
 
       updates.map(field => task[field] = req.body[field])
       await task.save()
@@ -89,7 +89,7 @@ router.delete('/tasks/:_id', auth, async (req, res) => {
    try {
       const task = await Task.findOneAndDelete({ _id, owner: req.user._id })
       if (!task)
-         return res.status(404).send()  //404: Not Found
+         return res.status(400).send()  //404: Not Found
       res.send(task)
    } catch (error) {
       res.status(500).send()  //500: Internal Server Error
