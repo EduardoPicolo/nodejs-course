@@ -28,6 +28,18 @@ test('Should sign up a new user', async () => {
    })
 })
 
+test('Should not signup user with invalid email', async () => {
+   const response = await request(app).post('/users')
+      .send({
+         name: 'Eduardo',
+         email: 'invalidEmail',
+         password: 'passwww!'
+      })
+      .expect(400)
+
+   expect(response.body.errors.email.message).toEqual('Email is invalid')
+})
+
 test('Should login existing user', async () => {
    const response = await request(app).post('/users/login')
       .send({

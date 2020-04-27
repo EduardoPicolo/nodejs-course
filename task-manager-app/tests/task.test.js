@@ -5,6 +5,8 @@ const {
    userOne,
    userTwo,
    taskOne,
+   taskTwo,
+   taskThree,
    setupDatabase
 } = require('./fixtures/db')
 
@@ -29,6 +31,29 @@ test('Should get all tasks for user one', async () => {
       .send()
       .expect(200)
    expect(response.body.length).toBe(2)
+})
+
+test('Should update authenticated user task', async () => {
+   const response = await request(app).patch('/tasks/' + taskOne._id)
+      .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+      .send({
+         description: 'updatedTask',
+         completed: true
+      })
+      .expect(200)
+
+   const task = await Task.findById(taskOne._id)
+   expect(task.description).toBe('updatedTask')
+})
+
+test('Should delete task', async () => {
+   const response = await request(app).delete('/tasks/' + taskOne._id)
+      .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+      .send()
+      .expect(200)
+
+   const task = await Task.findById(taskOne._id)
+   expect(task).toBeNull()
 })
 
 test('Should not delete not owned task', async () => {
