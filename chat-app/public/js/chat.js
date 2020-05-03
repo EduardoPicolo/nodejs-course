@@ -9,7 +9,11 @@ document.querySelector('#message-form').addEventListener('submit', (e) => {
 
    const msg = e.target.elements.message.value
 
-   socket.emit('sendMessage', msg)
+   socket.emit('sendMessage', msg, (error) => {
+      if (error) return console.log('Message was not delivered.', error)
+
+      console.log('Message delivered!')
+   })
 })
 
 document.querySelector('#send-location').addEventListener('click', () => {
@@ -17,6 +21,11 @@ document.querySelector('#send-location').addEventListener('click', () => {
 
    navigator.geolocation.getCurrentPosition((position) => {
       const { latitude, longitude } = position.coords
-      socket.emit('sendLocation', { latitude, longitude })
+
+      socket.emit('sendLocation', { latitude, longitude }, (error) => {
+         if (error) return console.log('Location was not shared.', error)
+
+         console.log('Location shared!')
+      })
    })
 })
