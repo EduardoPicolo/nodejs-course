@@ -32,10 +32,14 @@ label {
 }
 
 input {
-    border: 1px solid #eeeeee;
+    border: 1px solid #ccc;
     padding: 12px;
     outline: none;
 }
+
+/* input:focus { */
+   /* transform: scale(1.01); */
+/* } */
 
 button {
     cursor: pointer;
@@ -56,12 +60,25 @@ button:disabled {
     background: #7c5cbf94;
 }
 
+button:active {
+   transform: scale(0.95);
+   filter: brightness(135%);
+}
+
+button:focus {
+   outline: 0 !important;
+}
+
+::-moz-focus-inner {
+   border:0;
+}
+
 /* Join Page Styles */
 
 .centered-form {
     background: #333744;
     width: 100vw;
-    height: 100vh;   
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -115,7 +132,7 @@ button:disabled {
 /* Message Styles */
 
 .message {
-    margin-bottom: 16px;   
+    margin-bottom: 16px;
 }
 
 .message__name {
@@ -149,11 +166,15 @@ button:disabled {
 }
 
 .compose input {
-    border: 1px solid #eeeeee;
+    border: 1px solid #ddd;
     width: 100%;
     padding: 12px;
     margin: 0 16px 0 0;
     flex-grow: 1;
+}
+
+.compose input:invalid {
+   box-shadow: none;
 }
 
 .compose button {
@@ -166,7 +187,7 @@ button:disabled {
     font-weight: 400;
     font-size: 22px;
     background: #2c2f3a;
-    padding: 24px;   
+    padding: 24px;
 }
 
 .list-title {
