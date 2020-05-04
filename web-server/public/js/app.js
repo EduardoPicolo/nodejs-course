@@ -5,7 +5,7 @@ const $searchInput = document.querySelector('input')
 const $messageOne = document.querySelector('#location')
 const $messageTwo = document.querySelector('#forecast')
 
-weatherForm.addEventListener('submit', (e) => {
+weatherForm.addEventListener('submit', async (e) => {
    e.preventDefault()
 
    const location = $searchInput.value
@@ -13,18 +13,29 @@ weatherForm.addEventListener('submit', (e) => {
    $messageOne.textContent = 'Loading...'
    $messageTwo.textContent = ''
 
-   fetch(`/weather?address=${location}`).then((response) => {
-      response.json().then((data) => {
-         if (data.error) {
-            console.log(data.error)
-            $messageOne.textContent = data.error
-         } else {
-            console.log(data)
-            $messageOne.textContent = data.location
-            $messageTwo.textContent = data.forecast
-         }
-      })
-   })
+   const { data } = await axios.get(`/weather?address=${location}`)
+
+   if (data.error) {
+      console.log(data.error)
+      $messageOne.textContent = data.error
+   } else {
+      console.log(data)
+      $messageOne.textContent = data.location
+      $messageTwo.textContent = data.forecast
+   }
+
+   // fetch(`/weather?address=${location}`).then((response) => {
+   //    response.json().then((data) => {
+   //       if (data.error) {
+   //          console.log(data.error)
+   //          $messageOne.textContent = data.error
+   //       } else {
+   //          console.log(data)
+   //          $messageOne.textContent = data.location
+   //          $messageTwo.textContent = data.forecast
+   //       }
+   //    })
+   // })
 })
 
 const $myLocationButton = document.querySelector('#my-location')
