@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <title>Profile</title>
+   <link rel="icon" href="img/favicon.png">
+   <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+   <div class="centered-form">
+      <div class="centered-form__box">
+         <h1>{{username}}</h1>
+         <p>Email: {{email}}</p>
+         <br>
+         <h2>Create room</h2>
+         <form action="/chat">
+            <label>Display name</label>
+            <input type="text" name="username" value="{{username}}" placeholder="Display name" required>
+            <label>Room name</label>
+            <input type="text" name="room" placeholder="Room" required>
+            <button>Join</button>
+         </form>
+         <br>
+         <form method="post" action="/users/logout">
+            <input type="hidden" name="name" value="value" />
+            <button>Logout</button>
+         </form>
+      </div>
+   </div>
+</body>
+
+</html>
