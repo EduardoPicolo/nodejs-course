@@ -1,7 +1,12 @@
 const request = require('request')
 
-const geocode = (address, callback) => {
-   const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=pk.eyJ1IjoiZWR1YXJkb3BpY29sbyIsImEiOiJjazhzemhla2swMDhxM25xeDFmNHpsNjNtIn0.mLuQsQKFt4A2-13BnJWSRw&limit=1`
+const geocode = (callback, location) => {
+   let url
+   if (location.address) {
+      url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(location.address)}.json?access_token=pk.eyJ1IjoiZWR1YXJkb3BpY29sbyIsImEiOiJjazhzemhla2swMDhxM25xeDFmNHpsNjNtIn0.mLuQsQKFt4A2-13BnJWSRw&limit=1`
+   } else if (location.latitude && location.longitude) {
+      url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${location.longitude},${location.latitude}.json?access_token=pk.eyJ1IjoiZWR1YXJkb3BpY29sbyIsImEiOiJjazhzemhla2swMDhxM25xeDFmNHpsNjNtIn0.mLuQsQKFt4A2-13BnJWSRw&limit=1`
+   }
 
    request({ url, json: true }, (error, response) => {
       if (error) {
@@ -14,7 +19,7 @@ const geocode = (address, callback) => {
          callback(null, {
             latitude,
             longitude,
-            location: data.place_name,
+            address: data.place_name,
          })
       }
    })

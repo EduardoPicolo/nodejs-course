@@ -1,5 +1,4 @@
 const { Router } = require('express')
-const { geocode, forecast } = require('../utils/index')
 
 const router = new Router()
 
@@ -27,25 +26,6 @@ router.get('/help', (req, res) => {
    })
 })
 
-router.get('/weather', (req, res) => {
-   if (!req.query.address) {
-      return res.send({
-         error: "No address provided"
-      })
-   }
-   const address = req.query.address
-
-   geocode(address, (error, geoData) => {
-      if (error) return res.send({ error })
-
-      forecast(geoData, (error, forecastData) => {
-         if (error) return res.send({ error })
-
-         res.send({ forecast: forecastData, location: geoData.location, address })
-      })
-   })
-})
-
 router.get('/help/*', (req, res) => {
    res.render('404', {
       title: '404,',
@@ -60,4 +40,4 @@ router.get('*', (req, res) => {
    })
 })
 
-export default router
+module.exports = router

@@ -1,6 +1,8 @@
-const path = require('path')
 const express = require('express')
+const path = require('path')
 const hbs = require('hbs')
+const routes = require('./routers/routes')
+const weatherRoutes = require('./routers/weather')
 
 const app = express()
 
@@ -17,4 +19,7 @@ hbs.registerPartials(partialsPath)
 // Setup static directory to serve
 app.use(express.static(publicDirPath))
 
-export default app
+app.use(weatherRoutes)
+app.use(routes)
+
+module.exports = app
